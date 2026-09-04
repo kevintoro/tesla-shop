@@ -1,19 +1,21 @@
 import { Link } from "react-router";
-import { PlusIcon } from "lucide-react";
+import { PencilIcon, PlusIcon } from "lucide-react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
+import { CustomSpinner } from "@/components/custom/CustomSpinner.tsx";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableCaption,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/currency-formatter";
+import { useProducts } from "@/shop/hooks/useProducts.tsx";
 import { AdminTitle } from "../components/AdminTitle";
 
+
 export const AdminProductsPage = () => {
+  const { data, isLoading } = useProducts();
+
+  if (isLoading) {
+    return <CustomSpinner />;
+  }
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -39,34 +41,45 @@ export const AdminProductsPage = () => {
             <TableHead>Imagen</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>Precio</TableHead>
-            <TableHead>Categoría</TableHead>
+            <TableHead>Género</TableHead>
             <TableHead>Tallas</TableHead>
             <TableHead>Inventario</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>
-              <img src="https://placehold.co/100x100" alt="product image" />
-            </TableCell>
-            <TableCell>Nombre del producto</TableCell>
-            <TableCell>$250.00</TableCell>
-            <TableCell>Categoría del producto</TableCell>
-            <TableCell>XS, S, M, L, XL</TableCell>
-            <TableCell>100</TableCell>
-            <TableCell>
-              <Link to={`/admin/products/t-shirt-1`}>
-                <Button variant="outline" size="sm" className="mr-2">
-                  Editar
-                </Button>
-              </Link>
-            </TableCell>
-          </TableRow>
+          {data?.products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell className="font-medium">INV001</TableCell>
+              <TableCell>
+                <img
+                  src={product.images[0]}
+                  alt={product.slug}
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+              </TableCell>
+              <TableCell>
+                <Link
+                  to={`/admin/products/${product.slug}`}
+                  className="text-blue-950 hover:text-blue-700"
+                >
+                  {product.title}
+                </Link>
+              </TableCell>
+              <TableCell>{formatCurrency(product.price)}</TableCell>
+              <TableCell>{product.gender}</TableCell>
+              <TableCell>{product.sizes.join(", ")}</TableCell>
+              <TableCell>{product.stock}</TableCell>
+              <TableCell>
+                <Link to={`/admin/products/${product.slug}`}>
+                  <PencilIcon className="w-4 h-4 text-gray-500 hover:text-blue-700" />
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
-      <CustomPagination totalPages={5} />
+      <CustomPagination totalPages={data?.pages ?? 1} />
     </>
   );
 };

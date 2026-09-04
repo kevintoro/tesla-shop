@@ -5,6 +5,10 @@ import { AdminProductPage } from "./admin/product/AdminProductPage";
 import { AdminProductsPage } from "./admin/products/AdminProductsPage";
 import { LoginPage } from "./auth/pages/login/LoginPage";
 import { RegisterPage } from "./auth/pages/register/RegisterPage";
+import {
+  AdminRoute,
+  NotAuthenticatedRoute,
+} from "./components/routes/ProtectedRoutes";
 import { ShopLayout } from "./shop/layouts/ShopLayout";
 import { GenderPage } from "./shop/pages/gender/GenderPage";
 import { HomePage } from "./shop/pages/home/HomePage";
@@ -34,7 +38,11 @@ export const appRouter = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <AuthLayout />,
+    element: (
+      <NotAuthenticatedRoute>
+        <AuthLayout />
+      </NotAuthenticatedRoute>
+    ),
     children: [
       {
         index: true,
@@ -52,7 +60,11 @@ export const appRouter = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <AdminRoute>
+        <AdminLayout />
+      </AdminRoute>
+    ),
     children: [
       {
         index: true,

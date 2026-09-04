@@ -1,4 +1,6 @@
-import { Link } from "react-router";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router";
+import { useAuthStore } from "@/auth/stores/auth.store";
 import { CustomLogo } from "@/components/custom/CustomLogo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,11 +8,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const RegisterPage = () => {
+  const { signUp } = useAuthStore();
+  const navigate = useNavigate();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email") as string;
+    const fullName = formData.get("fullName") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+    if (password !== confirmPassword) {
+      toast.error("Las contraseñas no coinciden");
+      return;
+    }
+
+    const isSignedUp = await signUp(email, fullName, password);
+    if (!isSignedUp) {
+      toast.error("El email ya está registrado");
+      return;
+    }
+
+    toast.success("¡Registro exitoso!");
+    navigate("/");
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">
@@ -22,13 +48,20 @@ export const RegisterPage = () => {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="name">Nombre</Label>
-                <Input id="name" type="text" placeholder="Nombre" required />
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Nombre"
+                  required
+                  name="fullName"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -40,6 +73,17 @@ export const RegisterPage = () => {
                   type="password"
                   required
                   placeholder="contraseña"
+                  name="password"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  placeholder="confirmar contraseña"
+                  name="confirmPassword"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -82,7 +126,7 @@ export const RegisterPage = () => {
               <div className="text-center text-sm">
                 ¿Ya tienes una cuenta?{" "}
                 <Link to="/auth/login" className="underline underline-offset-4">
-                  Regístrate
+                  Inicia sesión
                 </Link>
               </div>
             </div>

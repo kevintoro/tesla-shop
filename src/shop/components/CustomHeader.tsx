@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { Search } from "lucide-react";
+import { useAuthStore } from "@/auth/stores/auth.store";
 import { CustomLogo } from "@/components/custom/CustomLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,7 @@ import { CustomNav } from "./CustomNav";
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user, isAdmin, logout } = useAuthStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get("query") || "";
   const { gender } = useParams();
@@ -79,17 +81,24 @@ export const CustomHeader = () => {
             <Button variant="ghost" size="icon" className="md:hidden">
               <Search className="h-5 w-5" />
             </Button>
-
-            <Link to="/auth/login">
-              <Button variant="default" size="sm">
-                Login
+            {user ? (
+              <Button variant="outline" size="sm" onClick={logout}>
+                Logout
               </Button>
-            </Link>
-            <Link to="/admin">
-              <Button variant="destructive" size="sm">
-                Admin
-              </Button>
-            </Link>
+            ) : (
+              <Link to="/auth/login">
+                <Button variant="default" size="sm">
+                  Login
+                </Button>
+              </Link>
+            )}
+            {isAdmin() && (
+              <Link to="/admin">
+                <Button variant="destructive" size="sm">
+                  Admin
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

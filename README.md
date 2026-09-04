@@ -15,5 +15,6 @@ To run this project locally, follow these steps:
 
 1. Clone this repository.
 2. Install dependencies with `npm install`.
-3. Start the development server with `npm run dev`.
+3. Create a `.env` file in the root directory following the structure of `.env.example`.
+4. Start the development server with `npm run dev`.
 

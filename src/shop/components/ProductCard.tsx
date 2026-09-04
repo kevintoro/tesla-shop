@@ -1,29 +1,50 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import type { Size } from "@/interfaces/product.interface";
 
 interface ProductCardProps {
+  category: string;
   id: string;
+  images: string[];
   name: string;
   price: number;
-  image: string;
-  category: string;
+  sizes: Size[];
 }
 
 export const ProductCard = ({
+  category,
+  images,
   name,
   price,
-  image,
-  category,
+  sizes,
 }: ProductCardProps) => {
   return (
     <Card className="group border-0 shadow-none product-card-hover cursor-pointer">
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden bg-muted rounded-lg">
-          <img
+          <Carousel>
+            <CarouselContent>
+              {images.map((image) => (
+                <CarouselItem key={image}>
+                  <img
+                    src={image}
+                    alt={name}
+                    className="h-full w-full object-cover"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+          {/* <img
             src={image}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          /> */}
           <div className="image-overlay" />
         </div>
 
@@ -32,6 +53,9 @@ export const ProductCard = ({
             <h3 className="font-medium text-sm tracking-tight">{name}</h3>
             <p className="text-xs text-muted-foreground uppercase">
               {category}
+            </p>
+            <p className="text-xs text-muted-foreground uppercase font-bold">
+              {sizes.join(", ")}
             </p>
           </div>
 

@@ -1,8 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { useSearchParams } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
+
 
 export const FilterSidebar = () => {
   const sizes = [
@@ -22,7 +23,11 @@ export const FilterSidebar = () => {
     const newSizes = currentSizes.includes(size)
       ? currentSizes.filter((s) => s !== size)
       : [...currentSizes, size];
-    searchParams.set("sizes", newSizes.join(","));
+    if (newSizes.length === 0) {
+      searchParams.delete("sizes");
+    } else {
+      searchParams.set("sizes", newSizes.join(","));
+    }
     setSearchParams(searchParams);
   };
 

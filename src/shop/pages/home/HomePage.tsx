@@ -1,17 +1,25 @@
 import { CustomPagination } from "@/components/custom/CustomPagination";
-import { products } from "@/mocks/products.mock";
+import { CustomSpinner } from "@/components/custom/CustomSpinner";
 import { CustomJumbotron } from "@/shop/components/CustomJumbotron";
 import { ProductsGrid } from "@/shop/components/ProductsGrid";
+import { useProducts } from "@/shop/hooks/useProducts";
+
 
 export const HomePage = () => {
+  const { data, isLoading } = useProducts();
+
+  if (isLoading || !data) {
+    return <CustomSpinner />;
+  }
+
   return (
     <>
       <CustomJumbotron
         title="Todos los productos"
         subtitle="Ropa minimalista y elegante inspirada en el diseño futurista de Tesla. Calidad premium para un estilo atemporal."
       />
-      <ProductsGrid products={products} />
-      <CustomPagination totalPages={4} />
+      <ProductsGrid products={data.products} />
+      <CustomPagination totalPages={data.pages} />
     </>
   );
 };

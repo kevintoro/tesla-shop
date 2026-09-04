@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import type { Product } from "@/mocks/products.mock";
-import { Filter, Grid, List } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
+import { Filter, Grid, List } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { Product } from "@/interfaces/product.interface";
 import { FilterSidebar } from "./FilterSidebar";
 import { ProductCard } from "./ProductCard";
 
@@ -23,7 +23,7 @@ export const ProductsGrid = ({ products }: ProductsGridProps) => {
   return (
     <section className="py-12 px-4 lg:px-8">
       <div className="container mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">
             <h2 className="text-3xl font-light">Productos</h2>
             <span className="text-muted-foreground">
@@ -99,10 +99,11 @@ export const ProductsGrid = ({ products }: ProductsGridProps) => {
                 <ProductCard
                   key={product.id}
                   id={product.id}
-                  name={product.name}
+                  name={product.title}
                   price={product.price}
-                  image={product.image}
-                  category={product.category}
+                  images={product.images}
+                  category={product.gender}
+                  sizes={product.sizes}
                 />
               ))}
             </div>
